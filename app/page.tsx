@@ -2,14 +2,15 @@
 import Image from "@/node_modules/next/image";
 import { CarCard, CustomFilter, Hero, SearchBar } from "@/components";
 import { fetchCars } from "@/components/utils";
+import { CarProps } from "@/types";
 
 // import fetchCars from '@utils';
 
 export default async function Home() {
   const allCars = await fetchCars();
-
-  const isDataEmpty = !Array.isArray(allCars) || allCars.length > 1 || !allCars;
-
+  
+  const isDataEmpty = allCars.length > 1 || !allCars;
+  
   return (
     <main className="overflow-hidden">
       <Hero />
@@ -29,11 +30,11 @@ export default async function Home() {
           </div>
         </div>
 
-        {!isDataEmpty ? (
+        {isDataEmpty ? (
           <section>
             <div className="home__cars-wrapper">
-              {allCars.map((car) => (
-                <CarCard />
+              {allCars.map((car: CarProps) => (
+                <CarCard car={car} key={car.city_mpg} />
               ))}
             </div>
           </section>
