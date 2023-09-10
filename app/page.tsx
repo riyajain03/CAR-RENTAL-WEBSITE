@@ -1,26 +1,25 @@
 // import {Hero} from "@/components/Hero";
 import Image from "@/node_modules/next/image";
-import { CarCard, CustomFilter, Hero, SearchBar } from "@/components";
+// import { CarCard, CustomFilter, Hero, SearchBar, ShowMore } from "@/components";
+import { CarCard, ShowMore, SearchBar, CustomFilter, Hero } from "@/components";
 import { fetchCars } from "@/components/utils";
 import { CarProps } from "@/types";
 import { HomeProps } from "@/types";
-import {  fuels ,yearsOfProduction } from "@/constants";
+import { fuels, yearsOfProduction } from "@/constants";
 
 // import fetchCars from '@utils';
 
-export default async function Home({searchParams}: HomeProps ) {
+export default async function Home({ searchParams }: HomeProps) {
   const allCars = await fetchCars({
     manufacturer: searchParams.manufacturer || "",
     year: searchParams.year || 2022,
     fuel: searchParams.fuel || "",
-    limit:searchParams.limit || 6,
+    limit: searchParams.limit || 10,
     model: searchParams.model || "",
-
   });
-  
+
   const isDataEmpty = allCars.length > 1 || !allCars;
 
-  
   return (
     <main className="overflow-hidden">
       <Hero />
@@ -33,7 +32,6 @@ export default async function Home({searchParams}: HomeProps ) {
 
         <div className="home__filters">
           <SearchBar />
-
 
           <div className="home__filter-container">
             <CustomFilter title="fuel" options={fuels} />
@@ -48,6 +46,11 @@ export default async function Home({searchParams}: HomeProps ) {
                 <CarCard car={car} key={car.city_mpg} />
               ))}
             </div>
+
+            <ShowMore
+              pageNumber={(searchParams.limit || 10) / 10}
+              isNext={(searchParams.limit || 10) > allCars.length}
+            />
           </section>
         ) : (
           <div className="home__error-container">
